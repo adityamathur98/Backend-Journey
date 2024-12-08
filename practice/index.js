@@ -1,4 +1,4 @@
-const { add, substraction } = require("./calculator");
-
-console.log(add(5, 6));
-console.log(substraction(5, 6));
+const path = require("path");
+const filePath = path.join("users", "ravi", "notes.txt");
+console.log(filePath);
+console.log(__dirname);
