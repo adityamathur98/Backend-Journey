@@ -1,9 +1,10 @@
 const factorialNums = (a) => {
-  let product = 1;
-  for (let i = 1; i <= a; i++) {
-    product *= i;
+  let factorial = 1;
+  while (a >= 1) {
+    factorial *= a;
+    a--;
   }
-  return product;
+  return factorial;
 };
 
 module.exports = factorialNums;

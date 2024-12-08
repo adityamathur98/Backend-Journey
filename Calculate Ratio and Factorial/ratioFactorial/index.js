@@ -12,4 +12,6 @@ function result(a, b, c) {
   return { ratio, factorial };
 }
 
+console.log(result(8, 4, 5));
+
 module.exports = result;
