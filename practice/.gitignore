@@ -1,0 +1,32 @@
+# Node.js dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+
+# SQLite database files
+*.db
+*.sqlite3
+
+# Debug files
+*.pid
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+build/
+
+# IDE configuration files
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.swp
