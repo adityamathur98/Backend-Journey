@@ -32,10 +32,20 @@ initializeDbAndServer();
 
 //Create Get Book Api
 app.get("/books/", async (request, response) => {
+  const {
+    offset = 0,
+    limit = 10,
+    search_q = "",
+    order = "ASC",
+    order_by = "book_id",
+  } = request.query;
   const getBooksQuery = `
         SELECT *
         FROM book
-        ORDER BY book_id;
+        WHERE title LIKE '%${search_q}%'
+
+        ORDER BY ${order_by} ${order}
+        LIMIT ${limit} OFFSET ${offset}; 
     `;
   const booksArray = await db.all(getBooksQuery);
   response.send(booksArray);
