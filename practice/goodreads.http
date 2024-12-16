@@ -1,3 +1,25 @@
+POST http://localhost:3000/users/
+Content-Type: application/json
+
+{
+  "name":"aditya",
+  "username":"aditya123",
+  "password":"aditya@456",
+  "gender":"Male",
+  "location":"jaipur"
+}
+
+###
+POST http://localhost:3000/login/
+Content-Type: application/json
+
+{
+  "username" : "aditya123",
+  "password": "aditya@456"
+}
+
+###
+
 GET http://localhost:3000/books/
 
 ###

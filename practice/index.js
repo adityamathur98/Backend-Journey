@@ -2,6 +2,7 @@
 const express = require("express");
 const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
+const bcrypt = require("bcrypt");
 const path = require("path");
 
 const dbPath = path.join(__dirname, "goodreads.db");
@@ -29,6 +30,64 @@ const initializeDbAndServer = async () => {
 initializeDbAndServer();
 
 //End - Steps to Initialize Database and Server
+
+//Register User Api
+app.post("/users/", async (request, response) => {
+  const { username, name, password, gender, location } = request.body;
+  const hasehdPassword = await bcrypt.hash(password, 10);
+  const seletedUserQuery = `
+    SELECT *
+    FROM user
+    WHERE username = '${username}';
+  `;
+  const dbUser = await db.get(seletedUserQuery);
+  if (dbUser == undefined) {
+    //Create New User
+    const createNewUserQuery = `
+      INSERT INTO
+        user (username, name, password, gender, location)
+      VALUES(
+        '${username}',
+        '${name}',
+        '${hasehdPassword}',
+        '${gender}',
+        '${location}'
+      );
+    `;
+    await db.run(createNewUserQuery);
+    response.send("User Created Successfully..!!!");
+  } else {
+    //User Already exist
+    response.status(400);
+    response.send("User Already Exist.");
+  }
+});
+
+//Login User Api
+app.post("/login/", async (request, response) => {
+  const { username, password } = request.body;
+  const seletedUserQuery = `
+    SELECT *
+    FROM user
+    WHERE username = '${username}';
+  `;
+  const dbUser = await db.get(seletedUserQuery);
+
+  if (dbUser === undefined) {
+    //Invalid User
+    response.status(400);
+    response.send("Invalid User");
+  } else {
+    //Check Password
+    const isPasswordMatched = await bcrypt.compare(password, dbUser.password);
+    if (isPasswordMatched) {
+      response.send("Login Successfully");
+    } else {
+      response.status(400);
+      response.send("Invalid Password");
+    }
+  }
+});
 
 //Create Get Book Api
 app.get("/books/", async (request, response) => {
