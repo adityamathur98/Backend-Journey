@@ -1,0 +1,29 @@
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{
+  "username": "aditya_kishore",
+  "name": "Aditya Mathur",
+  "password": "aditya_567",
+  "gender": "male",
+  "location": "India"
+}
+
+###
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "username":"aditya_kishore",
+    "password":"aditya_567"
+}
+
+###
+PUT http://localhost:3000/change-password
+Content-Type: application/json
+
+{
+    "username": "aditya_kishore",
+    "oldPassword": "aditya_567",
+    "newPassword" : "aditya@1998"
+}
