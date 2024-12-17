@@ -4,6 +4,7 @@ const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
 const bcrypt = require("bcrypt");
 const path = require("path");
+const jwt = require("jsonwebtoken");
 
 const dbPath = path.join(__dirname, "goodreads.db");
 
@@ -30,6 +31,35 @@ const initializeDbAndServer = async () => {
 initializeDbAndServer();
 
 //End - Steps to Initialize Database and Server
+
+const logger = (request, response, next) => {
+  console.log(request.query);
+  next();
+};
+
+const authenticateToken = (request, response, next) => {
+  let jwtToken;
+  const authHeader = request.headers["authorization"];
+
+  if (authHeader !== undefined) {
+    jwtToken = authHeader.split(" ")[1];
+  }
+
+  if (jwtToken === undefined) {
+    response.status(401);
+    response.send("Invalid JWT Token");
+  } else {
+    jwt.verify(jwtToken, "MY_SECRET_TOKEN", async (error, payload) => {
+      if (error) {
+        response.status(401);
+        response.send("Invalid JWT Token");
+      } else {
+        request.username = payload.username;
+        next();
+      }
+    });
+  }
+};
 
 //Register User Api
 app.post("/users/", async (request, response) => {
@@ -81,7 +111,9 @@ app.post("/login/", async (request, response) => {
     //Check Password
     const isPasswordMatched = await bcrypt.compare(password, dbUser.password);
     if (isPasswordMatched) {
-      response.send("Login Successfully");
+      const payload = { username: username };
+      const jwtToken = jwt.sign(payload, "MY_SECRET_TOKEN");
+      response.send({ jwtToken });
     } else {
       response.status(400);
       response.send("Invalid Password");
@@ -90,7 +122,8 @@ app.post("/login/", async (request, response) => {
 });
 
 //Create Get Book Api
-app.get("/books/", async (request, response) => {
+app.get("/books/", authenticateToken, async (request, response) => {
+  console.log("Get Books Api");
   const {
     offset = 0,
     limit = 10,
@@ -110,8 +143,20 @@ app.get("/books/", async (request, response) => {
   response.send(booksArray);
 });
 
+//User Profile Api
+app.get("/profile/", authenticateToken, async (request, response) => {
+  let { username } = request;
+  const selectUserQuery = `
+    SELECT *
+    FROM user
+    WHERE username = '${username}';
+  `;
+  const dbResponse = await db.get(selectUserQuery);
+  response.send(dbResponse);
+});
+
 //Create Get A Book Api
-app.get("/books/:bookId", async (request, response) => {
+app.get("/books/:bookId", authenticateToken, async (request, response) => {
   const { bookId } = request.params;
   const getBookQuery = `
     SELECT *

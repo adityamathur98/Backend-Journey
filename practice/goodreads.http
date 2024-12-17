@@ -1,3 +1,14 @@
+
+GET http://localhost:3000/books/?search_q=potter
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkaXR5YTEyMyIsImlhdCI6MTczNDQzNzI1NX0.re4uCM0-SaQxFmmKFw4N_BwXIIJ908r_-r9I2SCJNQE
+
+###
+
+GET http://localhost:3000/profile/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkaXR5YTEyMyIsImlhdCI6MTczNDQzNzI1NX0.re4uCM0-SaQxFmmKFw4N_BwXIIJ908r_-r9I2SCJNQE
+
+###
+
 POST http://localhost:3000/users/
 Content-Type: application/json
 
@@ -17,10 +28,6 @@ Content-Type: application/json
   "username" : "aditya123",
   "password": "aditya@456"
 }
-
-###
-
-GET http://localhost:3000/books/
 
 ###
 GET http://localhost:3000/books/?offset=2&limit=3&order_by=price&order=DESC
